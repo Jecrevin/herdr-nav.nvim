@@ -3,7 +3,7 @@ name = "Herdr Navigation"
 version = "0.1.0"
 min_herdr_version = "0.9.5"
 description = "Ctrl-hjkl across herdr panes and editor splits"
-platforms = ["linux", "macos"]
+platforms = ["linux", "macos", "windows"]
 
 # One action per direction. The editor side (Neovim's plugin/herdr_nav.lua, or
 # any program listed in $HERDR_PLUGIN_CONFIG_DIR/nav.json) moves between its own

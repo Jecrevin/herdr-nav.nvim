@@ -27,6 +27,10 @@ Either half is useless alone once Herdr owns the chords, so install both.
 - Node.js ≥ 22.18 (runs `nav.ts` directly — no build step, no dependencies)
 - Neovim with terminal `<C-h/j/k/l>` free (or remapped, see options)
 
+Herdr, Node and Neovim all run on Linux, macOS and Windows. The Windows path
+was not exercised during development; the process matcher strips `.exe` and any
+leading path, so `nvim.exe` is recognised the same way as `nvim`.
+
 ## Install
 
 ### 1. Herdr plugin
@@ -165,6 +169,8 @@ Note the two notations: Neovim's `keys` use `<C-h>` style, the Herdr plugin's
 - **`Ctrl+H` vs Backspace** share `0x08` unless the kitty keyboard protocol is
   active. Neovim ≥ 0.10 enables it inside Herdr panes; older Vim may need a
   separate `<BS>` mapping.
+- **Windows** is declared as supported but untested; report anything that
+  misroutes a chord.
 - **Herdr ≥ 0.9.5** is required for the plugin APIs used here; a stale
   `HERDR_BIN_PATH` (after `herdr update`) is detected and falls back to `herdr`
   on `PATH`.

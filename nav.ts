@@ -130,6 +130,13 @@ function currentPane(): string {
     return result.pane.pane_id;
 }
 
+// Windows reports process names as `nvim.exe` and may send a full path; match on
+// the bare executable name so one default works everywhere.
+function processName(raw: string): string {
+    const base = raw.split(/[\\/]/).pop() ?? raw;
+    return base.toLowerCase().replace(/\.exe$/, "");
+}
+
 function ownsChords(names: string[], config: Config): boolean {
     let patterns: RegExp[];
     try {
@@ -140,11 +147,36 @@ function ownsChords(names: string[], config: Config): boolean {
         fail(`bad regex in editors/passthrough: ${error}`);
     }
     return names.some((name) =>
-        patterns.some((pattern) => pattern.test(name.toLowerCase())),
+        patterns.some((pattern) => pattern.test(processName(name))),
     );
 }
 
+// `node nav.ts --self-check` — the matcher is the one piece of logic that can be
+// wrong without a visible failure, so keep a cheap assertion for it.
+function selfCheck(): void {
+    const cases: [string, boolean][] = [
+        ["nvim", true],
+        ["NVIM", true],
+        ["nvim.exe", true],
+        ["C:\\Program Files\\Neovim\\bin\\nvim.exe", true],
+        ["/usr/local/bin/vimdiff", true],
+        ["pi", false],
+        ["nvim.exe.bak", false],
+        ["sleep", false],
+    ];
+    for (const [name, expected] of cases) {
+        const got = ownsChords([name], { ...DEFAULT_CONFIG, passthrough: [] });
+        if (got !== expected) fail(`self-check: ${name} -> ${got}`);
+    }
+    if (!ownsChords(["lazygit"], { ...DEFAULT_CONFIG, passthrough: ["^lazygit$"] })) {
+        fail("self-check: passthrough");
+    }
+    process.stdout.write("self-check ok\n");
+}
+
 function main(): void {
+    if (process.argv[2] === "--self-check") return selfCheck();
+
     const direction = process.argv[2] as Direction;
     if (!DIRECTIONS.includes(direction)) {
         fail(`usage: nav.ts <${DIRECTIONS.join("|")}>`);
