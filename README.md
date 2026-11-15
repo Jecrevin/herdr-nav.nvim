@@ -9,7 +9,7 @@ This is the two-sided design of
 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator), ported
 to Herdr:
 
-- **Herdr side** — a Herdr plugin, id `herdr-nav` (`herdr-plugin.toml`,
+- **Herdr side** — a Herdr plugin, id `herdr-nav-nvim` (`herdr-plugin.toml`,
   `nav.ts`). Each chord checks the pane's foreground process; an editor gets the
   chord written back into its pty, anything else moves Herdr's focus.
 - **Neovim side** — `herdr-nav.nvim` (`plugin/herdr_nav.lua`). Moves between
@@ -17,7 +17,7 @@ to Herdr:
 
 One repository, two plugin conventions: Herdr reads `herdr-plugin.toml` at the
 root, Neovim reads `plugin/`. The Herdr plugin id is `herdr-nav`, so keybindings
-use `herdr-nav.left/down/up/right`; the Neovim plugin is `herdr-nav.nvim`.
+use `herdr-nav-nvim.left/down/up/right`; the Neovim plugin is `herdr-nav.nvim`.
 
 Either half is useless alone once Herdr owns the chords, so install both.
 
@@ -49,30 +49,30 @@ Bind the four actions in `~/.config/herdr/config.toml`:
 [[keys.command]]
 key = "ctrl+h"
 type = "plugin_action"
-command = "herdr-nav.left"
+command = "herdr-nav-nvim.left"
 description = "focus left pane / editor left split"
 
 [[keys.command]]
 key = "ctrl+j"
 type = "plugin_action"
-command = "herdr-nav.down"
+command = "herdr-nav-nvim.down"
 description = "focus down pane / editor lower split"
 
 [[keys.command]]
 key = "ctrl+k"
 type = "plugin_action"
-command = "herdr-nav.up"
+command = "herdr-nav-nvim.up"
 description = "focus up pane / editor upper split"
 
 [[keys.command]]
 key = "ctrl+l"
 type = "plugin_action"
-command = "herdr-nav.right"
+command = "herdr-nav-nvim.right"
 description = "focus right pane / editor right split"
 ```
 
 Reload with `prefix+shift+r`. Check with `herdr plugin action list --plugin
-herdr-nav` and `herdr plugin log list --plugin herdr-nav`.
+herdr-nav-nvim` and `herdr plugin log list --plugin herdr-nav-nvim`.
 
 The chords Herdr writes back into an editor pane come from the plugin's own
 config (see [Options](#options)); keep them identical to the editor's mappings
@@ -101,7 +101,7 @@ setup keeps working through `vim-tmux-navigator`.
 ## How it works
 
 ```
-ctrl+h ──► herdr keybind ──► herdr-nav.left ──► node nav.ts left
+ctrl+h ──► herdr keybind ──► herdr-nav-nvim.left ──► node nav.ts left
                                                   │
                           foreground program owns the chord?
                             ├─ yes ─► herdr pane send-keys <pane> ctrl+h
@@ -123,7 +123,7 @@ pane moved to another workspace.
 ### Herdr side
 
 `nav.json` in `$HERDR_PLUGIN_CONFIG_DIR` (print it with
-`herdr plugin config-dir herdr-nav`), written with defaults on first run:
+`herdr plugin config-dir herdr-nav-nvim`), written with defaults on first run:
 
 ```json
 {
