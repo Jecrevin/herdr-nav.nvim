@@ -8,6 +8,21 @@
   "engines": {
     "node": ">=22.18"
   },
+  "scripts": {
+    "test": "npm run test:node && npm run test:lua",
+    "test:node": "node --test test/",
+    "test:lua": "nvim --headless --clean -l test/plugin_spec.lua",
+    "self-check": "node nav.ts --self-check",
+    "typecheck": "tsc --noEmit",
+    "format": "stylua .",
+    "format:check": "stylua --check .",
+    "lint": "npm run typecheck && npm run format:check"
+  },
+  "devDependencies": {
+    "@johnnymorganz/stylua-bin": "^2.1.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
   "herdr": {
     "manifest": "herdr-plugin.toml"
   }

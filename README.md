@@ -178,6 +178,21 @@ Note the two notations: Neovim's `keys` use `<C-h>` style, the Herdr plugin's
   `herdr plugin install Jecrevin/herdr-nav.nvim` resolves through the Herdr
   plugin index. Add the `herdr-plugin` topic to the GitHub repository.
 
+## Development
+
+```sh
+npm install          # TypeScript, stylua (no runtime dependencies)
+npm test             # node --test test/ + nvim --headless -l test/plugin_spec.lua
+npm run lint         # tsc --noEmit + stylua --check .
+npm run format       # stylua .
+npm run self-check   # the process-name matcher, standalone
+```
+
+`test/nav.test.js` runs `nav.ts` against a stub `herdr` on `PATH` and asserts
+which herdr call each chord produces; `test/plugin_spec.lua` checks the Neovim
+mappings and the guards behind them. CI (`.github/workflows/ci.yml`) runs both
+on Ubuntu against Node 22 and Neovim stable.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
