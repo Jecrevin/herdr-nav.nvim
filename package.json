@@ -1,0 +1,14 @@
+{
+  "name": "herdr-nav.nvim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ctrl-hjkl navigation across Herdr panes and editor splits",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "herdr": {
+    "manifest": "herdr-plugin.toml"
+  }
+}
