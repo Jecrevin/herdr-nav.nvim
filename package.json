@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "npm run test:node && npm run test:lua",
-    "test:node": "node --test test/",
+    "test:node": "node --test test/nav.test.js",
     "test:lua": "nvim --headless --clean -l test/plugin_spec.lua",
     "self-check": "node nav.ts --self-check",
     "typecheck": "tsc --noEmit",

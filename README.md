@@ -182,7 +182,7 @@ Note the two notations: Neovim's `keys` use `<C-h>` style, the Herdr plugin's
 
 ```sh
 npm install          # TypeScript, stylua (no runtime dependencies)
-npm test             # node --test test/ + nvim --headless -l test/plugin_spec.lua
+npm test             # node --test test/nav.test.js + nvim --headless -l test/plugin_spec.lua
 npm run lint         # tsc --noEmit + stylua --check .
 npm run format       # stylua .
 npm run self-check   # the process-name matcher, standalone

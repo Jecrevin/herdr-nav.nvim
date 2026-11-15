@@ -1,7 +1,7 @@
 // Runs nav.ts the way herdr does — `node nav.ts <dir>` — against a stub `herdr`
 // on PATH, and asserts which herdr call each chord produces.
 //
-//   node --test test/
+//   node --test test/nav.test.js
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
