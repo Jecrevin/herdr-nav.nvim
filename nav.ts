@@ -2,12 +2,16 @@
 // herdr-nav — <A-h/j/k/l> across herdr panes and editor splits.
 //
 // Invoked by the four [[actions]] in herdr-plugin.toml as `node nav.ts <dir>`.
-// If the pane's foreground program owns these chords (an editor, or anything
-// listed in `passthrough`), the chord is written into that pane so the program
+// If the pane's foreground program owns these keys (an editor, or anything
+// listed in `passthrough`), the key is written into that pane so the program
 // moves between its own splits and calls back here at the edge. Otherwise herdr
 // moves focus. This is the `is_vim` half of vim-tmux-navigator.
 //
-// Config: $HERDR_PLUGIN_CONFIG_DIR/nav.json, written with defaults on first run.
+// Config: $HERDR_PLUGIN_CONFIG_DIR/nav.json. `forward` — the key written into
+// the pane — belongs to the editor's own mapping, so plugin/herdr_nav.lua writes
+// it there from vim.g.herdr_nav.keys; the rest is written with defaults on first
+// run. Herdr does not tell a plugin action which key fired it, so the key cannot
+// be taken from the binding itself.
 
 import { spawnSync } from "node:child_process";
 import {
@@ -27,7 +31,7 @@ type Config = {
     forward: Record<Direction, string>;
     /** Regexes matched against the lower-cased foreground process name. */
     editors: string[];
-    /** Extra programs that also keep the chord (lazygit, k9s, ...). */
+    /** Extra programs that also keep the key (lazygit, k9s, ...). */
     passthrough: string[];
     /** Leave a zoomed pane alone instead of moving focus. */
     skipWhenZoomed: boolean;
@@ -137,7 +141,7 @@ function processName(raw: string): string {
     return base.toLowerCase().replace(/\.exe$/, "");
 }
 
-function ownsChords(names: string[], config: Config): boolean {
+function ownsKeys(names: string[], config: Config): boolean {
     let patterns: RegExp[];
     try {
         patterns = [...config.editors, ...config.passthrough].map(
@@ -165,10 +169,15 @@ function selfCheck(): void {
         ["sleep", false],
     ];
     for (const [name, expected] of cases) {
-        const got = ownsChords([name], { ...DEFAULT_CONFIG, passthrough: [] });
+        const got = ownsKeys([name], { ...DEFAULT_CONFIG, passthrough: [] });
         if (got !== expected) fail(`self-check: ${name} -> ${got}`);
     }
-    if (!ownsChords(["lazygit"], { ...DEFAULT_CONFIG, passthrough: ["^lazygit$"] })) {
+    if (
+        !ownsKeys(["lazygit"], {
+            ...DEFAULT_CONFIG,
+            passthrough: ["^lazygit$"],
+        })
+    ) {
         fail("self-check: passthrough");
     }
     process.stdout.write("self-check ok\n");
@@ -195,7 +204,7 @@ function main(): void {
         (process) => process.name ?? "",
     );
 
-    if (ownsChords(names, config)) {
+    if (ownsKeys(names, config)) {
         herdrRun(["pane", "send-keys", pane, config.forward[direction]]);
         return;
     }

@@ -1,16 +1,11 @@
 // Runs nav.ts the way herdr does — `node nav.ts <dir>` — against a stub `herdr`
-// on PATH, and asserts which herdr call each chord produces.
+// on PATH, and asserts which herdr call each key produces.
 //
 //   node --test test/nav.test.js
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-    mkdirSync,
-    mkdtempSync,
-    readFileSync,
-    writeFileSync,
-} from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import { test } from "node:test";
@@ -73,13 +68,13 @@ function sandbox({ foreground = "bash", config, env = {} } = {}) {
         // Everything but the read-only probes (process-info, layout).
         decisions() {
             return this.calls().filter((call) =>
-                ["send-keys", "focus"].includes(call[1])
+                ["send-keys", "focus"].includes(call[1]),
             );
         },
     };
 }
 
-test("an editor pane gets the chord written back", () => {
+test("an editor pane gets the key written back", () => {
     const box = sandbox({ foreground: "nvim" });
     const result = box.run(["left"]);
     assert.equal(result.status, 0, result.stderr);
@@ -97,7 +92,7 @@ test("any other pane moves herdr focus", () => {
     ]);
 });
 
-test("passthrough programs keep the chord", () => {
+test("passthrough programs keep the key", () => {
     const box = sandbox({
         foreground: "lazygit",
         config: { passthrough: ["^lazygit$"] },
@@ -108,7 +103,7 @@ test("passthrough programs keep the chord", () => {
     ]);
 });
 
-test("config overrides the forwarded chord", () => {
+test("config overrides the forwarded key", () => {
     const box = sandbox({
         foreground: "nvim",
         config: { forward: { down: "ctrl+n" } },
@@ -127,7 +122,12 @@ test("a zoomed pane is left alone when skipWhenZoomed is set", () => {
     const result = box.run(["down"], { FAKE_ZOOMED: "1" });
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(box.decisions(), []);
-    assert.deepEqual(box.calls().at(-1), ["pane", "layout", "--pane", "pane-1"]);
+    assert.deepEqual(box.calls().at(-1), [
+        "pane",
+        "layout",
+        "--pane",
+        "pane-1",
+    ]);
 });
 
 test("without HERDR_PANE_ID the current pane is asked for", () => {
