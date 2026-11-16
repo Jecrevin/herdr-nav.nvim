@@ -21,6 +21,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - run: npm run format:ts:check
       # The routing tests drive a stub `herdr`, which is a shebang script: Node
       # refuses to spawn a .cmd equivalent without shell: true. The matcher they
       # mostly exercise is platform-relevant on Windows, so self-check runs there.
@@ -42,5 +43,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # `scripts/check-lua.mjs` reads $VIMRUNTIME from Neovim, so this job needs
+      # the Neovim step above; the pin matches the release CONTRIBUTING names.
+      - name: Install lua-language-server
+        run: |
+          version=3.19.2
+          url="https://github.com/LuaLS/lua-language-server/releases/download/${version}/lua-language-server-${version}-linux-x64.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/lls.tar.gz" "$url"
+          mkdir -p "$RUNNER_TEMP/lls"
+          tar -xzf "$RUNNER_TEMP/lls.tar.gz" -C "$RUNNER_TEMP/lls"
+          echo "LUA_LS_BIN=$RUNNER_TEMP/lls/bin/lua-language-server" >> "$GITHUB_ENV"
       - run: npm run format:check
+      - run: npm run check:lua
       - run: npm run test:lua

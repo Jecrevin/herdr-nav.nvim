@@ -14,13 +14,20 @@
     "test:lua": "nvim --headless --clean -l test/plugin_spec.lua",
     "self-check": "node nav.ts --self-check",
     "typecheck": "tsc --noEmit",
-    "format": "stylua .",
-    "format:check": "stylua --check .",
-    "lint": "npm run typecheck && npm run format:check"
+    "check:lua": "node scripts/check-lua.mjs",
+    "format:lua": "stylua .",
+    "format:lua:check": "stylua --check .",
+    "format:ts": "prettier --write *.ts test/**/*.js scripts/**/*.mjs",
+    "format:ts:check": "prettier --check *.ts test/**/*.js scripts/**/*.mjs",
+    "format": "npm run format:lua && npm run format:ts",
+    "format:check": "npm run format:lua:check && npm run format:ts:check",
+    "lint": "npm run typecheck && npm run format:check && npm run check:lua",
+    "verify": "npm run lint && npm run test && npm run self-check"
   },
   "devDependencies": {
     "@johnnymorganz/stylua-bin": "^2.1.0",
     "@types/node": "^22.0.0",
+    "prettier": "^3.6.2",
     "typescript": "^5.8.0"
   },
   "herdr": {

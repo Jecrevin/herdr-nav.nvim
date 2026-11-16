@@ -228,15 +228,20 @@ Reload Herdr with `prefix+shift+r` after editing the binding.
 ## Development
 
 ```sh
-npm install          # TypeScript, stylua (no runtime dependencies)
+npm ci               # tooling only (no runtime dependencies)
+npm run verify       # everything CI runs: lint, tests, self-check
 npm test             # node --test test/nav.test.js + nvim --headless -l test/plugin_spec.lua
-npm run lint         # tsc --noEmit + stylua --check .
-npm run format       # stylua .
+npm run lint         # tsc --noEmit + stylua/prettier --check + Lua diagnostics
+npm run check:lua    # lua-language-server against .luarc.json (zero warnings)
+npm run format       # stylua (Lua) + prettier (TypeScript/JavaScript)
 npm run self-check   # the process-name matcher, standalone
 ```
 
+Format, lint and test choices per language, plus the rules a change has to
+follow, are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 `test/nav.test.js` runs `nav.ts` against a stub `herdr` on `PATH` and asserts
-which herdr call each chord produces; `test/plugin_spec.lua` checks the Neovim
+which herdr call each key produces; `test/plugin_spec.lua` checks the Neovim
 mappings and the guards behind them. CI (`.github/workflows/ci.yml`) runs both
 on Ubuntu against Node 22 and Neovim stable.
 
