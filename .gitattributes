@@ -1,0 +1,4 @@
+# Keep LF in the working tree on every platform. `core.autocrlf` would otherwise
+# hand a Windows checkout CRLF files, and `prettier --check` (endOfLine: lf) then
+# fails on files nobody edited — which is what the windows-latest job hit first.
+* text=auto eol=lf
